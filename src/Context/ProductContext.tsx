@@ -19,42 +19,28 @@ const ProductProvider: React.FC<ProviderProps> = ({ children }) => {
 
   // Agregar un producto al carrito
   const addProductToCart = (product: Product) => {
-    const addedProduct: Product = {
-      itemId: product.itemId,
-      imageUrl: product.imageUrl,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      amount: product.amount,
-    };
+    setProducts((prevProducts) => {
+      const existingProduct = prevProducts.find(
+        (p) => p.itemId === product.itemId
+      );
 
-    let addProduct: boolean = true;
-    for (let i: number = 0; i < products.length; i++) {
-      if (products[i].itemId === addedProduct.itemId) {
-        products[i].amount++;
-        addProduct = false;
+      if (existingProduct) {
+        return prevProducts.map((p) =>
+          p.itemId === product.itemId ? { ...p, amount: p.amount + 1 } : p
+        );
+      } else {
+        return [...prevProducts, { ...product, amount: 1 }];
       }
-      if (addProduct) {
-        setProducts([...products, addedProduct]);
-      }
-    }
+    });
+    setCartNumber((prevNumber) => prevNumber + 1);
   };
 
   // Calcular el total del carrito
   const cartTotal = (products: Product[]): number => {
-    let total: number = 0;
-    for (let i: number = 0; i < products.length; i++) {
-      total += products[i].price * products[i].amount;
-
-      return total;
-    }
-
-    // Realizar una búsqueda de productos
-    const itemSearch = (e: string) => {
-      if (e) {
-        setSearch(e);
-      }
-    };
+    return products.reduce(
+      (total, product) => total + product.price * product.amount,
+      0
+    );
   };
 
   const removeProductFromCart = (productId: number) => {
@@ -62,9 +48,11 @@ const ProductProvider: React.FC<ProviderProps> = ({ children }) => {
       currentProducts.filter((product) => product.itemId !== productId)
     );
   };
+
   const itemsInCart = (): number => {
     return products.reduce((total, product) => total + product.amount, 0);
   };
+
   const updateAmount = (productId: number, newAmount: number) => {
     setProducts((currentProducts) =>
       currentProducts.map((product) =>
@@ -74,13 +62,16 @@ const ProductProvider: React.FC<ProviderProps> = ({ children }) => {
       )
     );
   };
+
   const itemSearch = (searchTerm: string) => {
     setSearch(searchTerm);
   };
+
   const removeAllProductsFromCart = () => {
     setProducts([]);
     setCartNumber(0); // Assuming you want to reset the cart number as well
   };
+
   return (
     <Context.Provider
       value={{
@@ -100,4 +91,5 @@ const ProductProvider: React.FC<ProviderProps> = ({ children }) => {
     </Context.Provider>
   );
 };
+
 export default ProductProvider;

@@ -7,10 +7,12 @@ const slideInAnimation = keyframes`
     0% {transform: translateX(100%)},
     100% {transform: translateX(0px)}
 `;
+
 const textAppear = keyframes`
     0% { opacity: 0%},
     100% { opacity: 100%},
 `;
+
 const Container = styled.div`
   width: 250px;
   height: 400px;
@@ -24,23 +26,26 @@ const Container = styled.div`
   color: ${(props) => props.theme.text};
   animation: ${slideInAnimation} 1s;
 `;
+
 const ImageContainer = styled.div`
   position: relative;
   height: 250px;
   overflow: hidden;
 `;
+
 const Image = styled.img`
   height: 100%;
-  max-weidth: 100%;
-  max-height: 100;
-  /* position: absolute*/
+  max-width: 100%;
+  max-height: 100%;
   animation: ${textAppear} 1s;
 `;
+
 const Title = styled.h3`
   font-weight: bold;
   padding-top: 5px;
   animation: ${textAppear} 1s;
 `;
+
 const DescriptionContainer = styled.div`
   height: 150px;
   width: 250px;
@@ -48,22 +53,25 @@ const DescriptionContainer = styled.div`
   padding: 10px;
   text-align: center;
   font-size: 14px;
-  display: flex;
   flex-direction: column;
 `;
+
 const Description = styled.p`
   animation: ${textAppear} 1s;
 `;
+
 const PriceContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 const Price = styled.p`
   margin: 5px;
   font-weight: bold;
   font-size: 18px;
   animation: ${textAppear} 1s;
 `;
+
 const Cart = styled.button`
   margin: 5px;
   border: none;
@@ -78,6 +86,7 @@ const Cart = styled.button`
     color: white;
   }
 `;
+
 const ProductCard: React.FC<Product> = ({
   itemId: productId,
   imageUrl: img,
@@ -86,19 +95,18 @@ const ProductCard: React.FC<Product> = ({
   price,
   amount,
 }) => {
-  const { addProductToCart, itemsInCart } = useContext(
-    Context
-  ) as ProductContextState;
+  const { addProductToCart } = useContext(Context) as ProductContextState;
+
   const addToCart = () => {
+    console.log("Adding product to cart", productId); // Debugging line
     addProductToCart({
       itemId: productId,
       imageUrl: img,
       name: title,
       description: desc,
       price,
-      amount,
+      amount: 1, // Ensure amount is set to 1 initially
     });
-    itemsInCart(1);
   };
 
   return (
@@ -111,7 +119,7 @@ const ProductCard: React.FC<Product> = ({
         <Description>{desc}</Description>
         <PriceContainer>
           <Price>${price}</Price>
-          <Cart onClick={addToCart}>!Añade al carrito¡</Cart>
+          <Cart onClick={addToCart}>¡Añade al carrito!</Cart>
         </PriceContainer>
       </DescriptionContainer>
     </Container>
